@@ -1,0 +1,1 @@
+Fix the md5auth compile problem introduced with the autotools updates.
