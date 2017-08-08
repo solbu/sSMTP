@@ -1,12 +1,4 @@
 *~
 *.bak
-*.o
 *.swp
 .bzr
-autom4te.cache
-config.cache
-config.log
-config.status
-core
-Makefile
-ssmtp
