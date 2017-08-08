@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl AC_INIT(ssmtp.c)
-AC_INIT([ssmtp], [2.65], [https://github.com/ajwans/sSMTP])
+AC_INIT([ssmtp], [2.65], [https://github.com/solbu/ssmtp])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 
 dnl Checks for programs.
