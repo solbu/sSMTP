@@ -10,4 +10,5 @@ ssmtp_SOURCES = \
 		xgethostname.h
 
 EXTRA_DIST = \
-	     md5auth
+	     md5auth \
+	     COPYRIGHT
