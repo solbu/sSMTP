@@ -2,6 +2,7 @@ sSMTP is licensed under the GNU General Public License (GPL)
 version 2 or above.
 
 Copyright (C) 2004-2008  Anibal Monsalve Salazar <anibal@debian.org>
+	      2017       Johnny A. Solbu <johnny@solbu.net>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -14,4 +15,4 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 Please read the "COPYING" file in the archive root, or visit
-http://www.gnu.org/licenses/gpl.html, for information about the GPL.
+https://www.gnu.org/licenses/gpl-2.0.html, for information about the GPL.
