@@ -1,3 +1,8 @@
+2017-08-08 Johnny A. Solbu <johnny@solbu.net>
+
+  - Update autotools scripts
+  - Clone from https://github.com/ajwans/sSMTP
+
 2009-07-06  Anibal Monsalve Salazar <anibal@debian.org>
 
   - Merge 01_password-handling.patch from Ubuntu
