@@ -8,3 +8,6 @@ ssmtp_SOURCES = \
 		ssmtp.h \
 		xgethostname.c \
 		xgethostname.h
+
+EXTRA_DIST = \
+	     md5auth
