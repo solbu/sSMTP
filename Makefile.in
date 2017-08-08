@@ -14,6 +14,7 @@
 
 @SET_MAKE@
 
+
 VPATH = @srcdir@
 am__is_gnu_make = test -n '$(MAKEFILE_LIST)' && test -n '$(MAKELEVEL)'
 am__make_running_with_option = \
@@ -91,7 +92,8 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
 mkinstalldirs = $(install_sh) -d
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-am__installdirs = "$(DESTDIR)$(sbindir)" "$(DESTDIR)$(man8dir)"
+am__installdirs = "$(DESTDIR)$(sbindir)" "$(DESTDIR)$(man5dir)" \
+	"$(DESTDIR)$(man8dir)" "$(DESTDIR)$(ssmtpconfdir)"
 PROGRAMS = $(sbin_PROGRAMS)
 am_ssmtp_OBJECTS = arpadate.$(OBJEXT) base64.$(OBJEXT) ssmtp.$(OBJEXT) \
 	xgethostname.$(OBJEXT)
@@ -159,9 +161,11 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
+man5dir = $(mandir)/man5
 man8dir = $(mandir)/man8
 NROFF = nroff
 MANS = $(dist_man_MANS)
+DATA = $(ssmtpconf_DATA)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
@@ -289,7 +293,15 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-dist_man_MANS = ssmtp.8
+dist_man_MANS = \
+		ssmtp.8 \
+		ssmtp.conf.5
+
+ssmtpconfdir = $(sysconfdir)/ssmtp
+ssmtpconf_DATA = \
+		 ssmtp.conf\
+		 revaliases
+
 ssmtp_SOURCES = \
 		arpadate.c \
 		base64.c \
@@ -299,7 +311,10 @@ ssmtp_SOURCES = \
 		xgethostname.h
 
 EXTRA_DIST = \
-	     md5auth
+	     md5auth \
+	     COPYRIGHT \
+	     ssmtp.conf \
+	     revaliases
 
 all: all-am
 
@@ -410,6 +425,49 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+install-man5: $(dist_man_MANS)
+	@$(NORMAL_INSTALL)
+	@list1=''; \
+	list2='$(dist_man_MANS)'; \
+	test -n "$(man5dir)" \
+	  && test -n "`echo $$list1$$list2`" \
+	  || exit 0; \
+	echo " $(MKDIR_P) '$(DESTDIR)$(man5dir)'"; \
+	$(MKDIR_P) "$(DESTDIR)$(man5dir)" || exit 1; \
+	{ for i in $$list1; do echo "$$i"; done;  \
+	if test -n "$$list2"; then \
+	  for i in $$list2; do echo "$$i"; done \
+	    | sed -n '/\.5[a-z]*$$/p'; \
+	fi; \
+	} | while read p; do \
+	  if test -f $$p; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; echo "$$p"; \
+	done | \
+	sed -e 'n;s,.*/,,;p;h;s,.*\.,,;s,^[^5][0-9a-z]*$$,5,;x' \
+	      -e 's,\.[0-9a-z]*$$,,;$(transform);G;s,\n,.,' | \
+	sed 'N;N;s,\n, ,g' | { \
+	list=; while read file base inst; do \
+	  if test "$$base" = "$$inst"; then list="$$list $$file"; else \
+	    echo " $(INSTALL_DATA) '$$file' '$(DESTDIR)$(man5dir)/$$inst'"; \
+	    $(INSTALL_DATA) "$$file" "$(DESTDIR)$(man5dir)/$$inst" || exit $$?; \
+	  fi; \
+	done; \
+	for i in $$list; do echo "$$i"; done | $(am__base_list) | \
+	while read files; do \
+	  test -z "$$files" || { \
+	    echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(man5dir)'"; \
+	    $(INSTALL_DATA) $$files "$(DESTDIR)$(man5dir)" || exit $$?; }; \
+	done; }
+
+uninstall-man5:
+	@$(NORMAL_UNINSTALL)
+	@list=''; test -n "$(man5dir)" || exit 0; \
+	files=`{ for i in $$list; do echo "$$i"; done; \
+	l2='$(dist_man_MANS)'; for i in $$l2; do echo "$$i"; done | \
+	  sed -n '/\.5[a-z]*$$/p'; \
+	} | sed -e 's,.*/,,;h;s,.*\.,,;s,^[^5][0-9a-z]*$$,5,;x' \
+	      -e 's,\.[0-9a-z]*$$,,;$(transform);G;s,\n,.,'`; \
+	dir='$(DESTDIR)$(man5dir)'; $(am__uninstall_files_from_dir)
 install-man8: $(dist_man_MANS)
 	@$(NORMAL_INSTALL)
 	@list1=''; \
@@ -453,6 +511,27 @@ uninstall-man8:
 	} | sed -e 's,.*/,,;h;s,.*\.,,;s,^[^8][0-9a-z]*$$,8,;x' \
 	      -e 's,\.[0-9a-z]*$$,,;$(transform);G;s,\n,.,'`; \
 	dir='$(DESTDIR)$(man8dir)'; $(am__uninstall_files_from_dir)
+install-ssmtpconfDATA: $(ssmtpconf_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(ssmtpconf_DATA)'; test -n "$(ssmtpconfdir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(ssmtpconfdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(ssmtpconfdir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(ssmtpconfdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(ssmtpconfdir)" || exit $$?; \
+	done
+
+uninstall-ssmtpconfDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(ssmtpconf_DATA)'; test -n "$(ssmtpconfdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(ssmtpconfdir)'; $(am__uninstall_files_from_dir)
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -678,9 +757,9 @@ distcleancheck: distclean
 	       exit 1; } >&2
 check-am: all-am
 check: check-am
-all-am: Makefile $(PROGRAMS) $(MANS)
+all-am: Makefile $(PROGRAMS) $(MANS) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(sbindir)" "$(DESTDIR)$(man8dir)"; do \
+	for dir in "$(DESTDIR)$(sbindir)" "$(DESTDIR)$(man5dir)" "$(DESTDIR)$(man8dir)" "$(DESTDIR)$(ssmtpconfdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -736,7 +815,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-man
+install-data-am: install-man install-ssmtpconfDATA
 
 install-dvi: install-dvi-am
 
@@ -752,7 +831,7 @@ install-info: install-info-am
 
 install-info-am:
 
-install-man: install-man8
+install-man: install-man5 install-man8
 
 install-pdf: install-pdf-am
 
@@ -783,9 +862,10 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-man uninstall-sbinPROGRAMS
+uninstall-am: uninstall-man uninstall-sbinPROGRAMS \
+	uninstall-ssmtpconfDATA
 
-uninstall-man: uninstall-man8
+uninstall-man: uninstall-man5 uninstall-man8
 
 .MAKE: install-am install-strip
 
@@ -798,14 +878,15 @@ uninstall-man: uninstall-man8
 	dvi-am html html-am info info-am install install-am \
 	install-data install-data-am install-dvi install-dvi-am \
 	install-exec install-exec-am install-html install-html-am \
-	install-info install-info-am install-man install-man8 \
-	install-pdf install-pdf-am install-ps install-ps-am \
-	install-sbinPROGRAMS install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic pdf pdf-am ps ps-am tags tags-am uninstall \
-	uninstall-am uninstall-man uninstall-man8 \
-	uninstall-sbinPROGRAMS
+	install-info install-info-am install-man install-man5 \
+	install-man8 install-pdf install-pdf-am install-ps \
+	install-ps-am install-sbinPROGRAMS install-ssmtpconfDATA \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic pdf pdf-am ps ps-am \
+	tags tags-am uninstall uninstall-am uninstall-man \
+	uninstall-man5 uninstall-man8 uninstall-sbinPROGRAMS \
+	uninstall-ssmtpconfDATA
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

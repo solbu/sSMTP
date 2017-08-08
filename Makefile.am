@@ -1,5 +1,12 @@
 sbin_PROGRAMS = ssmtp
-dist_man_MANS = ssmtp.8
+dist_man_MANS = \
+		ssmtp.8 \
+		ssmtp.conf.5
+
+ssmtpconfdir = $(sysconfdir)/ssmtp
+ssmtpconf_DATA = \
+		 ssmtp.conf\
+		 revaliases
 
 ssmtp_SOURCES = \
 		arpadate.c \
@@ -11,4 +18,6 @@ ssmtp_SOURCES = \
 
 EXTRA_DIST = \
 	     md5auth \
-	     COPYRIGHT
+	     COPYRIGHT \
+	     ssmtp.conf \
+	     revaliases
