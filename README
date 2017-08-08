@@ -47,10 +47,10 @@ IPv6 support from Jun-ya Kato <kato@goto.info.waseda.ac.jp>
 MD5 authentication support from TAKIZAWA Takashi <aki@luna.email.ne.jp>
 
 Current Maintainer:
- Anibal Monsalve Salazar, A.Monsalve.Salazar@IEEE.org
+ Johnny A. Solbu <johnny@solbu.net>
 
 Patchlevel:
  See ssmtp.c
 
 Copying conditions:
- GNU GPL
+ GNU GPLv2
