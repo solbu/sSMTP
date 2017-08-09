@@ -78,6 +78,10 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 sbin_PROGRAMS = ssmtp$(EXEEXT)
+@MD5AUTH_TRUE@am__append_1 = \
+@MD5AUTH_TRUE@		md5auth/md5c.c \
+@MD5AUTH_TRUE@		md5auth/hmac_md5.c
+
 subdir = .
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/configure $(am__configure_deps) depcomp \
@@ -95,8 +99,14 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(sbindir)" "$(DESTDIR)$(man5dir)" \
 	"$(DESTDIR)$(man8dir)" "$(DESTDIR)$(ssmtpconfdir)"
 PROGRAMS = $(sbin_PROGRAMS)
+am__ssmtp_SOURCES_DIST = arpadate.c base64.c ssmtp.c ssmtp.h \
+	xgethostname.c xgethostname.h md5auth/md5c.c \
+	md5auth/hmac_md5.c
+am__dirstamp = $(am__leading_dot)dirstamp
+@MD5AUTH_TRUE@am__objects_1 = md5auth/md5c.$(OBJEXT) \
+@MD5AUTH_TRUE@	md5auth/hmac_md5.$(OBJEXT)
 am_ssmtp_OBJECTS = arpadate.$(OBJEXT) base64.$(OBJEXT) ssmtp.$(OBJEXT) \
-	xgethostname.$(OBJEXT)
+	xgethostname.$(OBJEXT) $(am__objects_1)
 ssmtp_OBJECTS = $(am_ssmtp_OBJECTS)
 ssmtp_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_@AM_V@)
@@ -128,7 +138,7 @@ am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(ssmtp_SOURCES)
-DIST_SOURCES = $(ssmtp_SOURCES)
+DIST_SOURCES = $(am__ssmtp_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -248,7 +258,6 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
-SRCS = @SRCS@
 STRIP = @STRIP@
 VERSION = @VERSION@
 abs_builddir = @abs_builddir@
@@ -302,14 +311,8 @@ ssmtpconf_DATA = \
 		 ssmtp.conf\
 		 revaliases
 
-ssmtp_SOURCES = \
-		arpadate.c \
-		base64.c \
-		ssmtp.c \
-		ssmtp.h \
-		xgethostname.c \
-		xgethostname.h
-
+ssmtp_SOURCES = arpadate.c base64.c ssmtp.c ssmtp.h xgethostname.c \
+	xgethostname.h $(am__append_1)
 EXTRA_DIST = \
 	     md5auth \
 	     COPYRIGHT \
@@ -396,6 +399,16 @@ uninstall-sbinPROGRAMS:
 
 clean-sbinPROGRAMS:
 	-test -z "$(sbin_PROGRAMS)" || rm -f $(sbin_PROGRAMS)
+md5auth/$(am__dirstamp):
+	@$(MKDIR_P) md5auth
+	@: > md5auth/$(am__dirstamp)
+md5auth/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) md5auth/$(DEPDIR)
+	@: > md5auth/$(DEPDIR)/$(am__dirstamp)
+md5auth/md5c.$(OBJEXT): md5auth/$(am__dirstamp) \
+	md5auth/$(DEPDIR)/$(am__dirstamp)
+md5auth/hmac_md5.$(OBJEXT): md5auth/$(am__dirstamp) \
+	md5auth/$(DEPDIR)/$(am__dirstamp)
 
 ssmtp$(EXEEXT): $(ssmtp_OBJECTS) $(ssmtp_DEPENDENCIES) $(EXTRA_ssmtp_DEPENDENCIES) 
 	@rm -f ssmtp$(EXEEXT)
@@ -403,6 +416,7 @@ ssmtp$(EXEEXT): $(ssmtp_OBJECTS) $(ssmtp_DEPENDENCIES) $(EXTRA_ssmtp_DEPENDENCIE
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
+	-rm -f md5auth/*.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
@@ -411,17 +425,21 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/base64.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ssmtp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xgethostname.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@md5auth/$(DEPDIR)/hmac_md5.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@md5auth/$(DEPDIR)/md5c.Po@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
@@ -788,6 +806,8 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+	-rm -f md5auth/$(DEPDIR)/$(am__dirstamp)
+	-rm -f md5auth/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -798,7 +818,7 @@ clean-am: clean-generic clean-sbinPROGRAMS mostlyclean-am
 
 distclean: distclean-am
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
-	-rm -rf ./$(DEPDIR)
+	-rm -rf ./$(DEPDIR) md5auth/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -846,7 +866,7 @@ installcheck-am:
 maintainer-clean: maintainer-clean-am
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -rf $(top_srcdir)/autom4te.cache
-	-rm -rf ./$(DEPDIR)
+	-rm -rf ./$(DEPDIR) md5auth/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

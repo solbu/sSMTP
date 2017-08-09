@@ -625,7 +625,8 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
-SRCS
+MD5AUTH_FALSE
+MD5AUTH_TRUE
 EGREP
 GREP
 CPP
@@ -4620,8 +4621,15 @@ fi
 if test x$enableval = xyes ; then
 	$as_echo "#define MD5AUTH 1" >>confdefs.h
 
-	SRCS="$SRCS md5auth/md5c.c md5auth/hmac_md5.c"
 fi
+ if test x$enableval = xyes; then
+  MD5AUTH_TRUE=
+  MD5AUTH_FALSE='#'
+else
+  MD5AUTH_TRUE='#'
+  MD5AUTH_FALSE=
+fi
+
 enableval=""
 
 
@@ -4794,6 +4802,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${am__fastdepCC_TRUE}" && test -z "${am__fastdepCC_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCC\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${MD5AUTH_TRUE}" && test -z "${MD5AUTH_FALSE}"; then
+  as_fn_error $? "conditional \"MD5AUTH\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 
