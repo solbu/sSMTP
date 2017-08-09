@@ -16,6 +16,13 @@ ssmtp_SOURCES = \
 		xgethostname.c \
 		xgethostname.h
 
+if MD5AUTH
+ssmtp_SOURCES += \
+		md5auth/md5c.c \
+		md5auth/hmac_md5.c
+endif
+
+
 EXTRA_DIST = \
 	     md5auth \
 	     COPYRIGHT \

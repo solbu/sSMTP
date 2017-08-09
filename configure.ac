@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl AC_INIT(ssmtp.c)
 AC_INIT([ssmtp], [2.66], [https://github.com/solbu/ssmtp])
-AM_INIT_AUTOMAKE([-Wall -Werror foreign])
+AM_INIT_AUTOMAKE([-Wall -Werror foreign subdir-objects])
 
 dnl Checks for programs.
 AC_PROG_CC
@@ -76,9 +76,9 @@ AC_ARG_ENABLE(md5auth,
 [  --enable-md5auth         support for MD5 authentication])
 if test x$enableval = xyes ; then
 	AC_DEFINE(MD5AUTH)
-	SRCS="$SRCS md5auth/md5c.c md5auth/hmac_md5.c"
 fi
+AM_CONDITIONAL([MD5AUTH], [test x$enableval = xyes])
 enableval=""
-AC_SUBST(SRCS)
+
 
 AC_OUTPUT(Makefile)
